@@ -6,12 +6,14 @@ import io.github.ali127dev.cointrust.modules.account.domain.exceptions.AccountNo
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class DepositUsecase {
     private final AccountRepository accountRepository;
 
+    @Transactional
     public void execute(DepositInput input) {
         AccountId accountId = AccountId.fromString(input.accountId());
 
