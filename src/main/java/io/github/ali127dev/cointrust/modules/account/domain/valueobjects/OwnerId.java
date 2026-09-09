@@ -1,7 +1,6 @@
 package io.github.ali127dev.cointrust.modules.account.domain.valueobjects;
 
 
-import io.github.ali127dev.cointrust.modules.account.domain.exceptions.InvalidOwnerIdException;
 import io.github.ali127dev.cointrust.shared.domain.valueobjects.Identifier;
 
 import java.util.UUID;
