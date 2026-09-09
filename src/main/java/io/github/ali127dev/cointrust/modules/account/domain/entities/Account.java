@@ -39,14 +39,6 @@ public class Account {
         this(id, ownerId, "", 0);
     }
 
-    public Account(AccountId id, OwnerId ownerId, String address) {
-        this(id, ownerId, address, 0);
-    }
-
-    public Account(AccountId id, OwnerId ownerId, long balance) {
-        this(id, ownerId, "", balance);
-    }
-
     public void changeAddress(String value) {
         validateAddress(value);
         address = value;
