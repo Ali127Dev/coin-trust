@@ -1,4 +1,4 @@
-package io.github.ali127dev.cointrust.modules.account.domain.contracts;
+package io.github.ali127dev.cointrust.modules.account.domain.ports;
 
 import io.github.ali127dev.cointrust.modules.account.domain.entities.Account;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;

@@ -13,7 +13,7 @@ import java.util.UUID;
 @Table(name = "accounts")
 @Getter
 @NoArgsConstructor
-public class Account {
+public class AccountModel {
     @Id
     private UUID id;
 

@@ -1,6 +1,6 @@
 package io.github.ali127dev.cointrust.modules.account.application.usecases;
 
-import io.github.ali127dev.cointrust.modules.account.domain.contracts.AccountRepository;
+import io.github.ali127dev.cointrust.modules.account.domain.ports.AccountRepository;
 import io.github.ali127dev.cointrust.modules.account.domain.entities.Account;
 import io.github.ali127dev.cointrust.modules.account.domain.exceptions.AccountNotFoundException;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;
