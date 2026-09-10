@@ -24,6 +24,13 @@ public class AccountRepositoryAdapter implements AccountRepository {
     }
 
     @Override
+    public Optional<Account> findAccountForUpdate(AccountId id) {
+        return accountJpaRepository
+                .findAccountForUpdate(id.getValue())
+                .map(accountMapper::toDomain);
+    }
+
+    @Override
     public void save(Account account) {
         var model = accountMapper.toModel(account);
         accountJpaRepository.save(model);

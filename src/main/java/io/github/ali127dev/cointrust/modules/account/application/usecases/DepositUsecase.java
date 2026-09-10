@@ -17,7 +17,7 @@ public class DepositUsecase {
     public void execute(DepositInput input) {
         AccountId accountId = AccountId.fromString(input.accountId());
 
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findAccountForUpdate(accountId)
                 .orElseThrow(AccountNotFoundException::new);
 
         account.deposit(input.amount());

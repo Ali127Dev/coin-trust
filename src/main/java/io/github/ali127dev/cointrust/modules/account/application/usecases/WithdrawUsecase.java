@@ -17,7 +17,7 @@ public class WithdrawUsecase {
     public void execute(WithdrawInput input) {
         AccountId accountId = AccountId.fromString(input.accountId());
 
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findAccountForUpdate(accountId)
                 .orElseThrow(AccountNotFoundException::new);
 
         account.withdraw(input.amount());
