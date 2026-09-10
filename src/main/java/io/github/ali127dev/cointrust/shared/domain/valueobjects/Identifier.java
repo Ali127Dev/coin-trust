@@ -1,17 +1,16 @@
 package io.github.ali127dev.cointrust.shared.domain.valueobjects;
 
+import lombok.Getter;
+
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public abstract class Identifier {
     private final UUID value;
 
     protected Identifier(UUID value) {
         this.value = Objects.requireNonNull(value, "id value must not be null");
-    }
-
-    public UUID getValue() {
-        return value;
     }
 
     @Override

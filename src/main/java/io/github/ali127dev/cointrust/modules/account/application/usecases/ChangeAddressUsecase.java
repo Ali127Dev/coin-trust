@@ -4,6 +4,7 @@ import io.github.ali127dev.cointrust.modules.account.domain.ports.AccountReposit
 import io.github.ali127dev.cointrust.modules.account.domain.entities.Account;
 import io.github.ali127dev.cointrust.modules.account.domain.exceptions.AccountNotFoundException;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;
+import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.Address;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,8 @@ public class ChangeAddressUsecase {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(AccountNotFoundException::new);
 
-        account.changeAddress(input.address());
+        var newAddress = new Address(input.address());
+        account.changeAddress(newAddress);
 
         accountRepository.save(account);
     }

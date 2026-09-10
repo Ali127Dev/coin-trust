@@ -1,30 +1,23 @@
 package io.github.ali127dev.cointrust.modules.account.domain.entities;
 
-import io.github.ali127dev.cointrust.modules.account.domain.exceptions.InvalidAddressException;
-import io.github.ali127dev.cointrust.modules.account.domain.exceptions.InvalidBalanceException;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;
+import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.Address;
+import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.Balance;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.OwnerId;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @Getter
 public class Account {
-    private static final int MIN_ADDRESS_LENGTH = 30;
-    private static final int MAX_ADDRESS_LENGTH = 200;
-
     private final AccountId id;
     private final OwnerId ownerId;
-    private String address;
-    private long balance;
+    private Address address;
+    private Balance balance;
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Account(AccountId id, OwnerId ownerId, String address, long balance) {
-        validateAddress(address);
-        validateNonNegative(balance);
-
+    public Account(AccountId id, OwnerId ownerId, Address address, Balance balance) {
         var now = Instant.now();
 
         this.id = id;
@@ -36,7 +29,7 @@ public class Account {
     }
 
     public Account(AccountId id, OwnerId ownerId) {
-        this(id, ownerId, "", 0);
+        this(id, ownerId, Address.empty(), Balance.zero());
     }
 
     /**
@@ -48,8 +41,8 @@ public class Account {
     public Account(
             AccountId id,
             OwnerId ownerId,
-            String address,
-            long balance,
+            Address address,
+            Balance balance,
             Instant createdAt,
             Instant updatedAt
     ) {
@@ -61,41 +54,22 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-    public void changeAddress(String value) {
-        validateAddress(value);
+    public void changeAddress(Address value) {
         address = value;
         touch();
     }
 
-    public void deposit(long value) {
-        validateNonNegative(value);
-        balance += value;
+    public void deposit(long amount) {
+        balance = balance.add(amount);
         touch();
     }
 
-    public void withdraw(long value) {
-        validateNonNegative(value);
-        long newBalance = balance - value;
-        validateNonNegative(newBalance);
-        balance = newBalance;
+    public void withdraw(long amount) {
+        balance = balance.subtract(amount);
         touch();
     }
 
     private void touch() {
         updatedAt = Instant.now();
-    }
-
-    private void validateAddress(String value) {
-        Objects.requireNonNull(value);
-
-        if (value.isEmpty()) return;
-        if (value.length() < MIN_ADDRESS_LENGTH)
-            throw new InvalidAddressException(MIN_ADDRESS_LENGTH, null);
-        if (value.length() > MAX_ADDRESS_LENGTH)
-            throw new InvalidAddressException(null, MAX_ADDRESS_LENGTH);
-    }
-
-    private void validateNonNegative(long value) {
-        if (value < 0) throw new InvalidBalanceException();
     }
 }
