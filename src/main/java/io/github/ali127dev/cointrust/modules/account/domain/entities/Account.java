@@ -39,6 +39,28 @@ public class Account {
         this(id, ownerId, "", 0);
     }
 
+    /**
+     * Persistence-only constructor.
+     *
+     * <p>This constructor is intended exclusively for database loading
+     * by Spring Data. It must not be used for creating new Account instances.</p>
+     */
+    public Account(
+            AccountId id,
+            OwnerId ownerId,
+            String address,
+            long balance,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.address = address;
+        this.balance = balance;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public void changeAddress(String value) {
         validateAddress(value);
         address = value;

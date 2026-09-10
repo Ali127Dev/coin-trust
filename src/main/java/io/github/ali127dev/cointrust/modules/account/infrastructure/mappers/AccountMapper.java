@@ -10,7 +10,16 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
-    Account toDomain(AccountModel model);
+    default Account toDomain(AccountModel model) {
+        return new Account(
+                mapAccountId(model.getId()),
+                mapOwnerId(model.getOwnerId()),
+                model.getAddress(),
+                model.getBalance(),
+                model.getCreatedAt(),
+                model.getUpdatedAt()
+        );
+    }
 
     AccountModel toModel(Account account);
 
