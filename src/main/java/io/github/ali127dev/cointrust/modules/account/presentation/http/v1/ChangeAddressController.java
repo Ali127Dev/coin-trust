@@ -1,6 +1,7 @@
 package io.github.ali127dev.cointrust.modules.account.presentation.http.v1;
 
 import io.github.ali127dev.cointrust.modules.account.application.usecases.ChangeAddressUsecase;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/accounts")
+@Tag(name = "Account")
 @RequiredArgsConstructor
 public class ChangeAddressController {
     private final ChangeAddressUsecase changeAddressUsecase;

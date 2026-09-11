@@ -1,6 +1,7 @@
 package io.github.ali127dev.cointrust.modules.account.presentation.http.v1;
 
 import io.github.ali127dev.cointrust.modules.account.application.usecases.RegisterNewAccountUsecase;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/accounts")
+@Tag(name = "Account")
 @RequiredArgsConstructor
 public class RegisterNewAccountController {
     private final RegisterNewAccountUsecase registerNewAccountUsecase;
