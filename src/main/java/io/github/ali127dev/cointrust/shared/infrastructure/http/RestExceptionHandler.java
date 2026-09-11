@@ -1,6 +1,7 @@
 package io.github.ali127dev.cointrust.shared.infrastructure.http;
 
 import io.github.ali127dev.cointrust.shared.domain.exceptions.BusinessRuleViolationException;
+import io.github.ali127dev.cointrust.shared.domain.exceptions.IdempotencyException;
 import io.github.ali127dev.cointrust.shared.domain.exceptions.InvalidDataException;
 import io.github.ali127dev.cointrust.shared.domain.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,11 @@ public class RestExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(IdempotencyException.class)
+    public ResponseEntity<ErrorResponse> handleIdempotency(IdempotencyException ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(BusinessRuleViolationException.class)
     public ResponseEntity<ErrorResponse> handleBusinessRule(BusinessRuleViolationException ex) {
         return build(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
@@ -30,14 +36,28 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
+        return build(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Unexpected error occurred."
+        );
     }
 
-    private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
+    private ResponseEntity<ErrorResponse> build(
+            HttpStatus status,
+            String message
+    ) {
         return ResponseEntity.status(status)
-                .body(new ErrorResponse(status.value(), message, Instant.now()));
+                .body(new ErrorResponse(
+                        status.value(),
+                        message,
+                        Instant.now()
+                ));
     }
 
-    public record ErrorResponse(int status, String message, Instant timestamp) {
+    public record ErrorResponse(
+            int status,
+            String message,
+            Instant timestamp
+    ) {
     }
 }
