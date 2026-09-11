@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DepositController {
     private final DepositUsecase depositUsecase;
 
-    @PostMapping("/deposits")
+    @PostMapping("/deposit")
     public ResponseEntity<Void> deposit(@RequestBody @Valid DepositInput dto) {
         var input = new DepositUsecase.DepositInput(dto.accountId(), dto.amount());
 

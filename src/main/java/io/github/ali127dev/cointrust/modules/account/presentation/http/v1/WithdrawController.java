@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WithdrawController {
     private final WithdrawUsecase withdrawUsecase;
 
-    @PostMapping("/withdrawals")
+    @PostMapping("/withdraw")
     public ResponseEntity<Void> withdraw(@RequestBody @Valid WithdrawInput dto) {
         var input = new WithdrawUsecase.WithdrawInput(dto.accountId(), dto.amount());
 
