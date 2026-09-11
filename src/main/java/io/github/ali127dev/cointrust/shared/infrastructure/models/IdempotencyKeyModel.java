@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 import java.time.Instant;
 
@@ -13,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IdempotencyKeyModel {
+public class IdempotencyKeyModel implements Persistable<String> {
     @Id
     private String key;
 
@@ -26,9 +27,28 @@ public class IdempotencyKeyModel {
 
     private Instant completedAt;
 
+    @Transient
+    private boolean isNew = true;
+
     public IdempotencyKeyModel(String key) {
         this.key = key;
         this.status = IdempotencyStatus.IN_PROGRESS;
         this.createdAt = Instant.now();
+    }
+
+    @Override
+    public String getId() {
+        return key;
+    }
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
     }
 }
