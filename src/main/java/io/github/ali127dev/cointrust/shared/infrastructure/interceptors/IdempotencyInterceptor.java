@@ -46,8 +46,7 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
 
             case IN_PROGRESS -> throw new BusinessRuleViolationException(
                     "Request with this Idempotency-Key is already being processed"
-            ) {
-            };
+            );
 
             case ALREADY_COMPLETED -> {
                 response.setStatus(result.httpStatus());
