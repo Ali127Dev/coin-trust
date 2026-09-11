@@ -36,11 +36,12 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
             );
         }
 
-        var result = idempotencyService.tryClaim(key);
+        String requestKey = key + ":" + request.getRequestURI();
+        var result = idempotencyService.tryClaim(requestKey);
 
         switch (result.outcome()) {
             case CLAIMED -> {
-                request.setAttribute(REQUEST_ATTRIBUTE, key);
+                request.setAttribute(REQUEST_ATTRIBUTE, requestKey);
                 return true;
             }
 
