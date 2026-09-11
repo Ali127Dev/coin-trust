@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/v1/accounts")
 @Tag(name = "Account")
@@ -18,10 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class ChangeAddressController {
     private final ChangeAddressUsecase changeAddressUsecase;
 
-    @PatchMapping("/addresses")
-    public ResponseEntity<Void> changeAddress(@RequestBody @Valid ChangeAddressInput dto) {
+    @PatchMapping("/{accountId}/addresses")
+    public ResponseEntity<Void> changeAddress(
+            @PathVariable String accountId,
+            @RequestBody @Valid ChangeAddressInput dto
+    ) {
         // TODO: Replace request-body ownerId with the authenticated user's ID from Spring SecurityContext.
         var input = new ChangeAddressUsecase.ChangeAddressInput(
+                accountId,
                 dto.ownerId(),
                 dto.address()
         );

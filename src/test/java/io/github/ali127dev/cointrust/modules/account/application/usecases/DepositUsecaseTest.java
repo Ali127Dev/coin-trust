@@ -30,12 +30,17 @@ public class DepositUsecaseTest {
     @Test
     void shouldDepositIntoExistingAccount() {
         var accountId = AccountId.generate();
-        var account = new Account(accountId, OwnerId.fromUuid(UUID.randomUUID()));
+        var ownerId = OwnerId.fromUuid(UUID.randomUUID());
+        var account = new Account(accountId, ownerId);
 
-        when(accountRepository.findAccountForUpdate(any(AccountId.class)))
+        when(accountRepository.findAccountForUpdateByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.of(account));
 
-        var input = new DepositUsecase.DepositInput(accountId.getValue().toString(), 100L);
+        var input = new DepositUsecase.DepositInput(
+                accountId.getValue().toString(),
+                ownerId.getValue().toString(),
+                100L
+        );
         depositUsecase.execute(input);
 
         assertThat(account.getBalance().value()).isEqualTo(100L);
@@ -43,11 +48,15 @@ public class DepositUsecaseTest {
     }
 
     @Test
-    void shouldThrowWhenAccountDoesNotExist() {
-        when(accountRepository.findAccountForUpdate(any(AccountId.class)))
+    void shouldThrowWhenAccountDoesNotExistOrOwnerMismatch() {
+        when(accountRepository.findAccountForUpdateByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.empty());
 
-        var input = new DepositUsecase.DepositInput(UUID.randomUUID().toString(), 100L);
+        var input = new DepositUsecase.DepositInput(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                100L
+        );
 
         assertThatThrownBy(() -> depositUsecase.execute(input))
                 .isInstanceOf(AccountNotFoundException.class);

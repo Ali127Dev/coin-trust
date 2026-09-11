@@ -4,6 +4,7 @@ import io.github.ali127dev.cointrust.modules.account.domain.ports.AccountReposit
 import io.github.ali127dev.cointrust.modules.account.domain.entities.Account;
 import io.github.ali127dev.cointrust.modules.account.domain.exceptions.AccountNotFoundException;
 import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.AccountId;
+import io.github.ali127dev.cointrust.modules.account.domain.valueobjects.OwnerId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,9 @@ public class DepositUsecase {
     @Transactional
     public void execute(DepositInput input) {
         AccountId accountId = AccountId.fromString(input.accountId());
+        OwnerId ownerId = OwnerId.fromString(input.ownerId());
 
-        Account account = accountRepository.findAccountForUpdate(accountId)
+        Account account = accountRepository.findAccountForUpdateByIdAndOwnerId(accountId, ownerId)
                 .orElseThrow(AccountNotFoundException::new);
 
         account.deposit(input.amount());
@@ -25,6 +27,6 @@ public class DepositUsecase {
         accountRepository.save(account);
     }
 
-    public record DepositInput(String accountId, long amount) {
+    public record DepositInput(String accountId, String ownerId, long amount) {
     }
 }

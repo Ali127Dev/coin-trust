@@ -30,12 +30,17 @@ public class ChangeAddressUsecaseTest {
     @Test
     void shouldChangeAddress() {
         var accountId = AccountId.generate();
-        var account = new Account(accountId, OwnerId.fromUuid(UUID.randomUUID()));
+        var ownerId = OwnerId.fromUuid(UUID.randomUUID());
+        var account = new Account(accountId, ownerId);
 
-        when(accountRepository.findById(any(AccountId.class)))
+        when(accountRepository.findByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.of(account));
 
-        var input = new ChangeAddressUsecase.ChangeAddressInput(accountId.toString(), "a".repeat(30));
+        var input = new ChangeAddressUsecase.ChangeAddressInput(
+                accountId.toString(),
+                ownerId.getValue().toString(),
+                "a".repeat(30)
+        );
         changeAddressUsecase.execute(input);
 
         Assertions.assertThat(account.getAddress().value()).isEqualTo("a".repeat(30));
@@ -43,11 +48,15 @@ public class ChangeAddressUsecaseTest {
     }
 
     @Test
-    void shouldThrowWhenAccountDoesNotExist() {
-        when(accountRepository.findById(any(AccountId.class)))
+    void shouldThrowWhenAccountDoesNotExistOrOwnerMismatch() {
+        when(accountRepository.findByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.empty());
 
-        var input = new ChangeAddressUsecase.ChangeAddressInput(UUID.randomUUID().toString(), "a".repeat(30));
+        var input = new ChangeAddressUsecase.ChangeAddressInput(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                "a".repeat(30)
+        );
 
         assertThatThrownBy(() -> changeAddressUsecase.execute(input))
                 .isInstanceOf(AccountNotFoundException.class);

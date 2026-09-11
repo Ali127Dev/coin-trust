@@ -30,13 +30,18 @@ public class WithdrawUsecaseTest {
     @Test
     void shouldWithdrawFromExistingAccount() {
         var accountId = AccountId.generate();
-        var account = new Account(accountId, OwnerId.fromUuid(UUID.randomUUID()));
+        var ownerId = OwnerId.fromUuid(UUID.randomUUID());
+        var account = new Account(accountId, ownerId);
         account.deposit(100L);
 
-        when(accountRepository.findAccountForUpdate(any(AccountId.class)))
+        when(accountRepository.findAccountForUpdateByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.of(account));
 
-        var input = new WithdrawUsecase.WithdrawInput(accountId.toString(), 50L);
+        var input = new WithdrawUsecase.WithdrawInput(
+                accountId.toString(),
+                ownerId.getValue().toString(),
+                50L
+        );
         withdrawUsecase.execute(input);
 
         assertThat(account.getBalance().value()).isEqualTo(50L);
@@ -44,11 +49,15 @@ public class WithdrawUsecaseTest {
     }
 
     @Test
-    void shouldThrowWhenAccountDoesNotExist() {
-        when(accountRepository.findAccountForUpdate(any(AccountId.class)))
+    void shouldThrowWhenAccountDoesNotExistOrOwnerMismatch() {
+        when(accountRepository.findAccountForUpdateByIdAndOwnerId(any(AccountId.class), any(OwnerId.class)))
                 .thenReturn(Optional.empty());
 
-        var input = new WithdrawUsecase.WithdrawInput(UUID.randomUUID().toString(), 100L);
+        var input = new WithdrawUsecase.WithdrawInput(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                100L
+        );
 
         assertThatThrownBy(() -> withdrawUsecase.execute(input))
                 .isInstanceOf(AccountNotFoundException.class);

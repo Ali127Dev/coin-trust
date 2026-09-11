@@ -8,10 +8,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/accounts")
@@ -20,15 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class WithdrawController {
     private final WithdrawUsecase withdrawUsecase;
 
-    @PostMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@RequestBody @Valid WithdrawInput dto) {
-        var input = new WithdrawUsecase.WithdrawInput(dto.accountId(), dto.amount());
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<Void> withdraw(
+            @PathVariable String accountId,
+            @RequestBody @Valid WithdrawInput dto
+    ) {
+        // TODO: Replace request-body ownerId with the authenticated user's ID from Spring SecurityContext.
+        var input = new WithdrawUsecase.WithdrawInput(accountId, dto.ownerId(), dto.amount());
 
         withdrawUsecase.execute(input);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    public record WithdrawInput(@NotBlank String accountId, @Positive long amount) {
+    public record WithdrawInput(@NotBlank String ownerId, @Positive long amount) {
     }
 }

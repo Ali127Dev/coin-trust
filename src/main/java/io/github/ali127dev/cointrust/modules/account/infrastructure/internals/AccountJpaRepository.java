@@ -11,7 +11,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountJpaRepository extends JpaRepository<AccountModel, UUID> {
+    Optional<AccountModel> findByIdAndOwnerId(UUID id, UUID ownerId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM AccountModel a WHERE a.id = :id")
-    Optional<AccountModel> findAccountForUpdate(@Param("id") UUID id);
+    @Query("SELECT a FROM AccountModel a WHERE a.id = :id AND a.ownerId = :ownerId")
+    Optional<AccountModel> findAccountForUpdateByIdAndOwnerId(@Param("id") UUID id, @Param("ownerId") UUID ownerId);
 }

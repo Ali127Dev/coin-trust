@@ -8,10 +8,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/accounts")
@@ -20,15 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class DepositController {
     private final DepositUsecase depositUsecase;
 
-    @PostMapping("/deposit")
-    public ResponseEntity<Void> deposit(@RequestBody @Valid DepositInput dto) {
-        var input = new DepositUsecase.DepositInput(dto.accountId(), dto.amount());
+    @PostMapping("/{accountId}/deposit")
+    public ResponseEntity<Void> deposit(
+            @PathVariable String accountId,
+            @RequestBody @Valid DepositInput dto
+    ) {
+        // TODO: Replace request-body ownerId with the authenticated user's ID from Spring SecurityContext.
+        var input = new DepositUsecase.DepositInput(accountId, dto.ownerId(), dto.amount());
 
         depositUsecase.execute(input);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    public record DepositInput(@NotBlank String accountId, @Positive long amount) {
+    public record DepositInput(@NotBlank String ownerId, @Positive long amount) {
     }
 }
