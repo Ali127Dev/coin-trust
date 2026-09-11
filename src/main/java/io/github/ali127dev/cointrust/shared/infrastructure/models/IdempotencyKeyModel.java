@@ -27,11 +27,18 @@ public class IdempotencyKeyModel implements Persistable<String> {
 
     private Instant completedAt;
 
+    @Column(nullable = false)
+    private String payloadHash;
+
+    @Column(columnDefinition = "TEXT")
+    private String responseBody;
+
     @Transient
     private boolean isNew = true;
 
-    public IdempotencyKeyModel(String key) {
+    public IdempotencyKeyModel(String key, String payloadHash) {
         this.key = key;
+        this.payloadHash = payloadHash;
         this.status = IdempotencyStatus.IN_PROGRESS;
         this.createdAt = Instant.now();
     }
