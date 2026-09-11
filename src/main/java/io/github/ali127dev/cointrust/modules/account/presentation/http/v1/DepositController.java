@@ -1,6 +1,9 @@
 package io.github.ali127dev.cointrust.modules.account.presentation.http.v1;
 
 import io.github.ali127dev.cointrust.modules.account.application.usecases.DepositUsecase;
+import io.github.ali127dev.cointrust.shared.infrastructure.annotations.Idempotent;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +21,12 @@ public class DepositController {
     private final DepositUsecase depositUsecase;
 
     @PostMapping("/{accountId}/deposit")
+    @Idempotent
+    @Parameter(
+            name = "Idempotency-Key",
+            required = true,
+            in = ParameterIn.HEADER
+    )
     public ResponseEntity<Void> deposit(
             @PathVariable String accountId,
             @RequestBody @Valid DepositInput dto
